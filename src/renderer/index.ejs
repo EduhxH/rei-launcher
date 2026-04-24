@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rei Launcher</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/app.css">
+</head>
+<body>
+    <!-- Animated gradient background + floating orbs -->
+    <div class="glass-bg">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="orb orb-4"></div>
+        <div class="noise-overlay"></div>
+    </div>
+
+    <!-- Floating particles -->
+    <div class="particles" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+    </div>
+
+    <div class="app-shell">
+        <!-- TOP BAR (draggable) -->
+        <header class="top-bar">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <svg width="28" height="28" viewBox="0 0 40 40" fill="none">
+                        <rect x="6" y="12" width="8" height="18" fill="#7df9ff"/>
+                        <rect x="18" y="6" width="8" height="24" fill="#38bdf8"/>
+                        <rect x="30" y="14" width="8" height="16" fill="#7df9ff"/>
+                    </svg>
+                </div>
+                <div class="logo-label">
+                    <span class="logo-text">Rei<span class="logo-accent">Launcher</span></span>
+                    <span class="logo-tag">v1.0.0 · glass edition</span>
+                </div>
+            </div>
+
+            <nav class="tabs-nav" data-testid="tabs-nav">
+                <button class="tab-btn active" data-tab="play" data-testid="tab-play">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                    <span>Jogar</span>
+                </button>
+                <button class="tab-btn" data-tab="users" data-testid="tab-users">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                    <span>Contas</span>
+                </button>
+                <button class="tab-btn" data-tab="screenshots" data-testid="tab-screenshots">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                    <span>Galeria</span>
+                </button>
+                <button class="tab-btn" data-tab="settings" data-testid="tab-settings">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l1.72-1.34c.15-.12.19-.34.1-.51l-1.63-2.83c-.12-.22-.37-.29-.59-.22l-2.03.81c-.42-.32-.86-.58-1.35-.78l-.31-2.15c-.05-.24-.24-.41-.5-.41h-3.26c-.26 0-.45.17-.49.41l-.31 2.15c-.48.2-.93.47-1.35.78l-2.03-.81c-.22-.09-.47 0-.59.22L2.74 8.87c-.09.17-.04.39.1.51l1.72 1.34c-.05.3-.07.62-.07.94s.02.64.07.94l-1.72 1.34c-.15.12-.19.34-.1.51l1.63 2.83c.12.22.37.29.59.22l2.03-.81c.42.32.86.58 1.35.78l.31 2.15c.05.24.24.41.5.41h3.26c.26 0 .45-.17.49-.41l.31-2.15c.48-.2.93-.47 1.35-.78l2.03.81c.22.09.47 0 .59-.22l1.63-2.83c.09-.17.05-.39-.1-.51l-1.72-1.34zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                    <span>Ajustes</span>
+                </button>
+            </nav>
+
+            <div class="top-bar-right">
+                <div class="profile-card" data-testid="profile-card">
+                    <img class="profile-avatar" src="https://minotar.net/helm/<%= typeof account !== 'undefined' && account ? account.username : 'Steve' %>/64" alt="Avatar">
+                    <div class="profile-details">
+                        <p class="profile-name"><%= typeof account !== 'undefined' && account ? account.username : 'Convidado' %></p>
+                        <p class="profile-status">Online</p>
+                    </div>
+                </div>
+                <div class="window-controls">
+                    <button id="min-btn" class="control-btn" title="Minimizar" data-testid="minimize-btn">
+                        <svg width="12" height="12" viewBox="0 0 12 12"><rect x="2" y="5.5" width="8" height="1" fill="currentColor"/></svg>
+                    </button>
+                    <button id="close-btn" class="control-btn close-btn" title="Fechar" data-testid="close-btn">
+                        <svg width="12" height="12" viewBox="0 0 12 12"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <div class="tabs-content">
+
+                <!-- PLAY TAB -->
+                <div class="tab-panel active" id="play-tab">
+                    <div class="play-grid">
+                        <!-- HERO CARD -->
+                        <section class="hero-card glass" data-testid="hero-card">
+                            <div class="hero-art" aria-hidden="true">
+                                <div class="hero-blocks">
+                                    <span class="b b1"></span>
+                                    <span class="b b2"></span>
+                                    <span class="b b3"></span>
+                                    <span class="b b4"></span>
+                                    <span class="b b5"></span>
+                                    <span class="b b6"></span>
+                                </div>
+                                <div class="hero-glow"></div>
+                            </div>
+                            <div class="hero-body">
+                                <span class="hero-eyebrow">
+                                    <span class="live-dot"></span>
+                                    Pronto para jogar
+                                </span>
+                                <h1 class="hero-title">Minecraft<span class="hero-title-accent">.</span></h1>
+                                <p class="hero-subtitle">Construa, explore e sobreviva. Escolha uma versão e mergulhe no seu próximo mundo.</p>
+
+                                <div class="hero-controls">
+                                    <div class="form-group">
+                                        <label for="version-select">Versão do Jogo</label>
+                                        <div class="select-wrap">
+                                            <select id="version-select" class="glass-input" data-testid="version-select">
+                                                <% remoteVersions.forEach(function(version) { %>
+                                                    <option value="<%= version %>"><%= version %></option>
+                                                <% }); %>
+                                            </select>
+                                            <svg class="select-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        </div>
+                                    </div>
+
+                                    <button id="play-btn" class="btn-primary" data-testid="play-btn">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                                        <span>JOGAR</span>
+                                    </button>
+                                </div>
+
+                                <div id="progress-section" class="progress-section hidden" data-testid="progress-section">
+                                    <div class="progress-info">
+                                        <p id="progress-status">Preparando ficheiros...</p>
+                                        <span id="progress-percent">0%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div id="progress-fill" class="progress-fill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- SIDE CARDS -->
+                        <aside class="side-cards">
+                            <article class="side-card glass" data-testid="side-card-news">
+                                <div class="side-icon side-icon-amber">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M20 3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14H5v-2h6v2zm0-4H5v-2h6v2zm0-4H5V7h6v2zm7 8h-5V7h5v10z"/></svg>
+                                </div>
+                                <div class="side-body">
+                                    <h3>Novidades</h3>
+                                    <p>Últimos snapshots e updates. Fique por dentro das mudanças mais recentes antes de entrar.</p>
+                                    <span class="side-tag">atualizado hoje</span>
+                                </div>
+                            </article>
+
+                            <article class="side-card glass" data-testid="side-card-tips">
+                                <div class="side-icon side-icon-cyan">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7zm-2 19c0 .55.45 1 1 1h2c.55 0 1-.45 1-1v-1h-4v1z"/></svg>
+                                </div>
+                                <div class="side-body">
+                                    <h3>Dica rápida</h3>
+                                    <p>Aloque pelo menos <strong>4 GB de RAM</strong> para versões modernas. Configure em <em>Ajustes → Jogo</em>.</p>
+                                    <span class="side-tag">performance</span>
+                                </div>
+                            </article>
+                        </aside>
+
+                        <!-- QUICK STATS ROW -->
+                        <div class="stats-row">
+                            <div class="stat-card glass" data-testid="stat-versions">
+                                <span class="stat-label">Versões</span>
+                                <span class="stat-value"><%= remoteVersions.length %></span>
+                                <span class="stat-meta">disponíveis</span>
+                            </div>
+                            <div class="stat-card glass" data-testid="stat-ram">
+                                <span class="stat-label">RAM padrão</span>
+                                <span class="stat-value">4<span class="stat-unit">GB</span></span>
+                                <span class="stat-meta">alocados</span>
+                            </div>
+                            <div class="stat-card glass" data-testid="stat-resolution">
+                                <span class="stat-label">Resolução</span>
+                                <span class="stat-value">1080<span class="stat-unit">p</span></span>
+                                <span class="stat-meta">full hd</span>
+                            </div>
+                            <div class="stat-card glass stat-card-accent" data-testid="stat-status">
+                                <span class="stat-label">Status</span>
+                                <span class="stat-value stat-value-live">Online</span>
+                                <span class="stat-meta">servidores ok</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- USERS TAB -->
+                <div class="tab-panel" id="users-tab">
+                    <div class="section-header">
+                        <div>
+                            <h2 class="section-title">Gerenciar Contas</h2>
+                            <p class="section-subtitle">Adicione, troque e gerencie suas contas Minecraft.</p>
+                        </div>
+                        <div class="section-actions">
+                            <button id="add-offline-btn" class="btn-secondary" data-testid="add-offline-btn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                                <span>Conta Offline</span>
+                            </button>
+                            <button id="add-microsoft-btn" class="btn-primary btn-sm" data-testid="add-microsoft-btn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z"/></svg>
+                                <span>Microsoft</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="accounts-list glass-panel" id="accounts-list" data-testid="accounts-list">
+                        <!-- Preenchido pelo JS -->
+                    </div>
+                </div>
+
+                <!-- SCREENSHOTS TAB -->
+                <div class="tab-panel" id="screenshots-tab">
+                    <div class="section-header">
+                        <div>
+                            <h2 class="section-title">Galeria</h2>
+                            <p class="section-subtitle">Suas capturas de tela mais recentes.</p>
+                        </div>
+                    </div>
+
+                    <div class="screenshots-grid" id="screenshots-grid" data-testid="screenshots-grid">
+                        <!-- Preenchido pelo JS -->
+                    </div>
+                </div>
+
+                <!-- SETTINGS TAB -->
+                <div class="tab-panel" id="settings-tab">
+                    <div class="section-header">
+                        <div>
+                            <h2 class="section-title">Ajustes</h2>
+                            <p class="section-subtitle">Personalize sua experiência no launcher.</p>
+                        </div>
+                    </div>
+
+                    <div class="settings-grid">
+                        <div class="settings-group glass" data-testid="settings-game">
+                            <div class="settings-group-header">
+                                <span class="settings-dot"></span>
+                                <h3>Jogo</h3>
+                            </div>
+                            <div class="settings-item">
+                                <label for="ram-setting">Memória RAM (GB)</label>
+                                <input type="number" id="ram-setting" class="glass-input" value="4" min="1" max="32" data-testid="ram-setting">
+                            </div>
+                            <div class="settings-item">
+                                <label for="resolution-setting">Resolução</label>
+                                <div class="select-wrap">
+                                    <select id="resolution-setting" class="glass-input" data-testid="resolution-setting">
+                                        <option value="1280x720">1280x720 (HD)</option>
+                                        <option value="1600x900">1600x900 (HD+)</option>
+                                        <option value="1920x1080" selected>1920x1080 (Full HD)</option>
+                                        <option value="2560x1440">2560x1440 (QHD)</option>
+                                    </select>
+                                    <svg class="select-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="settings-group glass" data-testid="settings-appearance">
+                            <div class="settings-group-header">
+                                <span class="settings-dot"></span>
+                                <h3>Aparência</h3>
+                            </div>
+                            <div class="settings-item settings-row">
+                                <div>
+                                    <label>Tema Escuro</label>
+                                    <small>Visual escuro com blur de vidro</small>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="theme-toggle" checked data-testid="theme-toggle">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="settings-group glass" data-testid="settings-account">
+                            <div class="settings-group-header">
+                                <span class="settings-dot dot-red"></span>
+                                <h3>Conta</h3>
+                            </div>
+                            <p class="settings-help">Ao desconectar, suas credenciais de autenticação serão removidas deste dispositivo.</p>
+                            <button id="logout-btn" class="btn-danger" data-testid="logout-btn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+                                <span>Desconectar</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="./renderer.js"></script>
+</body>
+</html>
