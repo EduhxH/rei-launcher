@@ -1,5 +1,6 @@
 #  Rei Launcher
 OMG I WANT TO GO TO SLEEP SO BAD
+
 A modern, clean Minecraft launcher built with Electron.
 
 ## Features
