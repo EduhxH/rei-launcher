@@ -32,10 +32,17 @@ The `Authenticator` static class was removed in newer versions of `minecraft-lau
 correct shape expected by the launcher core, replacing the removed static call.
 
 🚀 Clonar o projeto
-git clone https://github.com/EduhxH/rei-launcher.git && cd rei-launcher
+
+git clone https://github.com/EduhxH/rei-launcher.git && 
+
+cd rei-launcher
+
 📦 Instalar dependências
+
 npm install
+
 ▶️ Iniciar o projeto
+
 npm start
 
 ## Stack
