@@ -33,7 +33,7 @@ correct shape expected by the launcher core, replacing the removed static call.
 
 🚀 Clonar o projeto
 
-git clone https://github.com/EduhxH/rei-launcher.git && 
+git clone https://github.com/EduhxH/rei-launcher.git
 
 cd rei-launcher
 
