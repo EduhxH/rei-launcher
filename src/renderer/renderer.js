@@ -18,6 +18,15 @@ tabButtons.forEach(button => {
         const targetPanel = document.getElementById(`${tabName}-tab`);
         if (targetPanel) {
             targetPanel.classList.add('active');
+            
+            // Carregar contas quando a aba de contas for aberta
+            if (tabName === 'users') {
+                loadAccounts();
+            }
+            // Carregar screenshots quando a aba de screenshots for aberta
+            if (tabName === 'screenshots') {
+                loadScreenshots();
+            }
         }
     });
 });
@@ -74,13 +83,16 @@ function escapeHtml(str = '') {
 async function loadAccounts() {
     try {
         const accounts = await window.launcher.accounts.get();
+        const loginCard = document.getElementById('login-card');
         accountsList.innerHTML = '';
 
         if (!accounts || accounts.length === 0) {
-            accountsList.innerHTML = '<p>Nenhuma conta adicionada ainda.</p>';
+            loginCard.classList.remove('hidden');
+            accountsList.innerHTML = '';
             return;
         }
 
+        loginCard.classList.add('hidden');
         accounts.forEach(account => {
             const item = document.createElement('div');
             item.className = 'account-item';
@@ -113,14 +125,76 @@ window.removeAccount = async (id) => {
 };
 
 addOfflineBtn.addEventListener('click', async () => {
-    const username = prompt('Digite o nome de usuário:');
-    if (username) {
-        try {
-            await window.launcher.accounts.addOffline(username);
-            loadAccounts();
-        } catch (error) {
-            alert('Erro: ' + error.message);
-        }
+    document.getElementById('modal-offline').classList.remove('hidden');
+    document.getElementById('offline-username-input').focus();
+    document.getElementById('offline-username-input').value = '';
+});
+
+window.submitOfflineForm = async () => {
+    const username = document.getElementById('offline-username-input').value.trim();
+    
+    if (!username) {
+        alert('Digite um nome de usuário!');
+        return;
+    }
+    
+    if (username.length < 2 || username.length > 16) {
+        alert('Nome de usuário deve ter entre 2 e 16 caracteres!');
+        return;
+    }
+    
+    try {
+        closeOfflineModal();
+        await window.launcher.accounts.addOffline(username);
+        loadAccounts();
+    } catch (error) {
+        alert('Erro: ' + error.message);
+    }
+};
+
+window.closeOfflineModal = () => {
+    document.getElementById('modal-offline').classList.add('hidden');
+    document.getElementById('offline-username-input').value = '';
+};
+
+// Fechar modal ao clicar fora
+document.addEventListener('click', (e) => {
+    const modal = document.getElementById('modal-offline');
+    if (e.target === modal) {
+        window.closeOfflineModal();
+    }
+});
+
+// Listeners para botões de login
+document.addEventListener('DOMContentLoaded', () => {
+    const input = document.getElementById('offline-username-input');
+    const btnLoginOffline = document.querySelector('.btn-login-offline');
+    const btnLoginMicrosoft = document.querySelector('.btn-login-microsoft');
+    
+    if (input) {
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                window.submitOfflineForm();
+            }
+        });
+    }
+    
+    if (btnLoginOffline) {
+        btnLoginOffline.addEventListener('click', () => {
+            document.getElementById('modal-offline').classList.remove('hidden');
+            document.getElementById('offline-username-input').focus();
+        });
+    }
+    
+    if (btnLoginMicrosoft) {
+        btnLoginMicrosoft.addEventListener('click', async () => {
+            try {
+                await window.launcher.accounts.addMicrosoft();
+                loadAccounts();
+            } catch (error) {
+                alert('Erro: ' + error.message);
+            }
+        });
     }
 });
 
@@ -132,8 +206,6 @@ addMicrosoftBtn.addEventListener('click', async () => {
         alert('Erro: ' + error.message);
     }
 });
-
-document.querySelector('[data-tab="users"]').addEventListener('click', loadAccounts);
 
 // ===== SCREENSHOTS TAB =====
 const screenshotsGrid = document.getElementById('screenshots-grid');

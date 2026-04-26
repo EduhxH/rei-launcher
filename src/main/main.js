@@ -7,6 +7,7 @@ const store = require('./store/store.js');
 
 // offline em src/main/auth/
 const { createOfflineAccount } = require('./auth/offline.js');
+const { authenticateMicrosoft } = require('./auth/microsoft.js');
 
 // launcher em src/main/launcher/
 const { getRemoteVersions } = require('./launcher/versions.js');
@@ -116,8 +117,16 @@ ipcMain.handle('account:addOffline', async (event, username) => {
 
 ipcMain.handle('account:addMicrosoft', async (event) => {
     try {
-        // Placeholder para Microsoft auth
-        return { success: false, error: 'Microsoft auth não implementado ainda' };
+        const res = await authenticateMicrosoft();
+        if (res.success) {
+            const accounts = store.get('accounts') || [];
+            accounts.push(res.account);
+            store.set('accounts', accounts);
+            if (!store.get('account')) {
+                store.set('account', res.account);
+            }
+        }
+        return res;
     } catch (err) {
         return { success: false, error: err.message };
     }
