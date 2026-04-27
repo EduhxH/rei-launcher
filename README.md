@@ -1,7 +1,3 @@
-> A modern, sleek, and minimalist Minecraft launcher built with Electron, deeply inspired by the Rei Ayanami (Evangelion) aesthetic. Features Microsoft/Offline authentication, automatic Java detection, and a premium UI based on Behance designs.
-
----
-
 <div align="center">
   <img src="https://raw.githubusercontent.com/EduhxH/rei-launcher/main/assets/rei-spinning.gif" width="150" height="150" alt="Spinning Rei">
   <h1>Rei Launcher</h1>
@@ -28,9 +24,12 @@ We are currently working on a **dedicated website** for Rei Launcher! Once it's 
 - 🛠️ **Smart Config:** Automatic Java detection and profile management.
 - 🔒 **Secure:** Built with `contextIsolation` and modern Electron security best practices.
 
-## 📸 Screenshots
+## 📸 Preview
 
-*(Pro-tip: Add screenshots of your UI here to showcase the design!)*
+<div align="center">
+  <img src="https://raw.githubusercontent.com/EduhxH/rei-launcher/main/assets/login_preview.gif" width="600" alt="Login Screen Preview">
+  <p><i>Login Screen Preview</i></p>
+</div>
 
 ## 🚀 Getting Started (Development)
 
@@ -96,5 +95,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ---
 Built with ❤️ and LCL by [EduhxH](https://github.com/EduhxH)
-
-
