@@ -1,11 +1,6 @@
 > A modern, sleek, and minimalist Minecraft launcher built with Electron, deeply inspired by the Rei Ayanami (Evangelion) aesthetic. Features Microsoft/Offline authentication, automatic Java detection, and a premium UI based on Behance designs.
 
-## 🏷️ Suggested Topics
-`minecraft` `minecraft-launcher` `electron` `javascript` `desktop-app` `rei-ayanami` `evangelion` `cross-platform` `microsoft-auth` `ui-design` `minimalist` `game-launcher`
-
 ---
-
-## 📄 New README.md
 
 <div align="center">
   <img src="https://raw.githubusercontent.com/EduhxH/rei-launcher/main/assets/rei-spinning.gif" width="150" height="150" alt="Spinning Rei">
