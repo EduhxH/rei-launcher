@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/EduhxH/rei-launcher/main/assets/rei-spinning.gif" width="150" height="150" alt="Spinning Rei">
+  <img src="src/assets/Design sem nome (1).gif" width="150" height="150" alt="Spinning Rei">
   <h1>Rei Launcher</h1>
   <p><i>"The dreams of the heart are the source of all power."</i></p>
 
@@ -27,7 +27,7 @@ We are currently working on a **dedicated website** for Rei Launcher! Once it's 
 ## 📸 Preview
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/EduhxH/rei-launcher/main/assets/login_preview.gif" width="600" alt="Login Screen Preview">
+  <img src="src/assets/login_preview.gif" width="600" alt="Login Screen Preview">
   <p><i>Login Screen Preview</i></p>
 </div>
 
