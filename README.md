@@ -1,7 +1,6 @@
 <div align="center">
   <img src="src/assets/Design%20sem%20nome%20(1).gif" width="150" height="150" alt="Spinning Rei">
   <h1>Rei Launcher</h1>
-  <p><i>"The dreams of the heart are the source of all power."</i></p>
 
   [![Electron](https://img.shields.io/badge/Electron-28.3.3-blue?style=for-the-badge&logo=electron)](https://www.electronjs.org/)
   [![Node](https://img.shields.io/badge/Node-20.x-green?style=for-the-badge&logo=node.js)](https://nodejs.org/)
