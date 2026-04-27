@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="src/assets/Design sem nome (1).gif" width="150" height="150" alt="Spinning Rei">
+  <img src="src/assets/Design%20sem%20nome%20(1).gif" width="150" height="150" alt="Spinning Rei">
   <h1>Rei Launcher</h1>
   <p><i>"The dreams of the heart are the source of all power."</i></p>
 
@@ -95,3 +95,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ---
 Built with ❤️ and LCL by [EduhxH](https://github.com/EduhxH)
+
