@@ -1,4 +1,5 @@
 const axios = require('axios');
+const loaders = require('./loaders');
 
 async function getRemoteVersions() {
     try {
@@ -14,4 +15,55 @@ async function getRemoteVersions() {
     }
 }
 
-module.exports = { getRemoteVersions };
+async function getLoaderVersions(loaderType) {
+    try {
+        switch (loaderType) {
+            case 'fabric':
+                return await loaders.getFabricVersions();
+            case 'forge':
+                return await loaders.getForgeVersions();
+            case 'optifine':
+                return await loaders.getOptifineVersions();
+            case 'neoforge':
+                return await loaders.getNeoforgeVersions();
+            case 'iris':
+                return await loaders.getIrisVersions();
+            default:
+                return [];
+        }
+    } catch (error) {
+        console.error(`Erro ao buscar versões de ${loaderType}:`, error);
+        return [];
+    }
+}
+
+async function getLoaderSubVersions(loaderType, gameVersion) {
+    try {
+        switch (loaderType) {
+            case 'fabric':
+                return await loaders.getFabricLoaderVersions(gameVersion);
+            default:
+                return [];
+        }
+    } catch (error) {
+        console.error(`Erro ao buscar sub-versões de ${loaderType}:`, error);
+        return [];
+    }
+}
+
+function isVersionCompatibleWithLoader(gameVersion, loaderType) {
+    return loaders.isCompatible(loaderType, gameVersion);
+}
+
+function getCompatibleLoadersForVersion(gameVersion) {
+    const allLoaders = ['fabric', 'forge', 'optifine', 'neoforge', 'iris'];
+    return allLoaders.filter(loader => isVersionCompatibleWithLoader(gameVersion, loader));
+}
+
+module.exports = {
+    getRemoteVersions,
+    getLoaderVersions,
+    getLoaderSubVersions,
+    isVersionCompatibleWithLoader,
+    getCompatibleLoadersForVersion
+};

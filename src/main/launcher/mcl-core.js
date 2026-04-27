@@ -4,11 +4,12 @@ const path = require('path');
 const fs = require('fs');
 const { detectJava } = require('./java');
 const store = require('../store/store');
+const modifiers = require('./modifiers');
 
 const launcher = new Client();
 const MINECRAFT_DIR = path.join(app.getPath('appData'), '.rei-launcher');
 
-async function launchGame(version, onProgress, onLog) {
+async function launchGame(version, modifierType, modifierVersion, onProgress, onLog) {
     return new Promise(async (resolve, reject) => {
         try {
             const account = store.get('account');
@@ -59,10 +60,15 @@ if (javaPath !== 'java' && !fs.existsSync(javaPath)) {
                 auth = await Authenticator.getAuth('Player');
             }
 
+            // Determinar versão a usar (modificada ou vanilla)
+            const finalVersion = modifierType && modifierType !== 'vanilla' 
+                ? `${version}-${modifierType}`
+                : version;
+
             const opts = {
                 authorization: auth,
                 root: MINECRAFT_DIR,
-                version: { number: version, type: 'release' },
+                version: { number: finalVersion, type: 'release' },
                 memory: {
                     max: `${settings.ram}M`,
                     min: '1024M'

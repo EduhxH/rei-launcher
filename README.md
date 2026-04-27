@@ -1,53 +1,83 @@
-#  Rei Launcher
-OMG I WANT TO GO TO SLEEP SO BAD
+# ⚔️ Rei Launcher
 
-A modern, clean Minecraft launcher built with Electron.
+> Premium Minecraft Launcher — design inspired by Breus Studio / Infinity Universe
 
-## Features
-- Offline & Microsoft account support
-- Version management (install & select)
-- Screenshot gallery
-- Skin preview via mc-heads.net / NameMC
-- RAM allocation slider
-- Java auto-detection
-- Modrinth integration
+![Electron](https://img.shields.io/badge/Electron-28-47848F?style=flat-square&logo=electron)
+![Node](https://img.shields.io/badge/Node-20-339933?style=flat-square&logo=node.js)
 
-## Setup
+---
+
+## ✨ Features
+- 🔐 Microsoft OAuth 2.0 + Offline authentication (fixed `getOfflineAuth` bug)
+- 🚀 Full Minecraft launch via `minecraft-launcher-core`
+- 📰 Weekly News feed with search & tag filters
+- 🎮 Home, Play, Profile, Settings screens
+- 🔄 Auto-updater via GitHub Releases
+- 🪟 Frameless, secure (`contextIsolation: true`, `nodeIntegration: false`)
+- 🎨 Premium dark UI — exact recreation of Behance design
+
+---
+
+## 🚀 Quick Start
 
 ```bash
 npm install
 npm start
 ```
 
-## Build (Windows)
+## 🏗️ Build
 
 ```bash
-npm run build:win
+npm run dist:win    # Windows .exe
+npm run dist:linux  # Linux .AppImage
+npm run dist:mac    # macOS .dmg
 ```
 
-## Bug Fixed: `TypeError: Authenticator.getOfflineAuth is not a function`
+---
 
-The `Authenticator` static class was removed in newer versions of `minecraft-launcher-core`.
-**Fix:** `src/main/launcher/launch.js` now builds the offline auth object manually using the
-correct shape expected by the launcher core, replacing the removed static call.
+## 📁 Structure
 
-🚀 Clonar o projeto
+```
+rei-launcher/
+├── src/
+│   ├── main/
+│   │   ├── index.js      ← Electron main process
+│   │   └── preload.js    ← contextBridge (secure IPC)
+│   ├── renderer/
+│   │   └── app.html      ← Complete UI (all screens)
+│   ├── styles/
+│   │   └── global.css
+│   └── assets/
+├── .github/workflows/    ← CI/CD
+├── package.json
+└── README.md
+```
 
-git clone https://github.com/EduhxH/rei-launcher.git
+---
 
-cd rei-launcher
+## 🐛 Fixed Bugs
 
-📦 Instalar dependências
+### `TypeError: Authenticator.getOfflineAuth is not a function`
 
-npm install
+**Root cause:** `minecraft-launcher-core` v3+ deprecated the `Authenticator` helper.
 
-▶️ Iniciar o projeto
+**Fix in `src/main/index.js`:**
+```js
+// ❌ Old (broken)
+const auth = await Authenticator.getOfflineAuth(username)
 
-npm start
+// ✅ New (correct)
+const auth = {
+  access_token:    'offline',
+  client_token:    account.uuid,
+  uuid:            account.uuid,
+  name:            account.name,
+  user_properties: '{}',
+  meta: { type: 'mojang', demo: false },
+}
+```
 
-## Stack
-- Electron 28
-- minecraft-launcher-core 3.17
-- msmc 5 (Microsoft auth)
-- electron-store 8
-- uuid 9
+---
+
+## 📄 License
+MIT © EduhxH

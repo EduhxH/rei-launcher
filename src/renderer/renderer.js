@@ -1,58 +1,141 @@
 // ===== WINDOW CONTROLS =====
-document.getElementById('min-btn').onclick = () => window.launcher.window.minimize();
-document.getElementById('close-btn').onclick = () => window.launcher.window.close();
+const initializeRenderer = () => {
+    const minBtn = document.getElementById('min-btn');
+    const closeBtn = document.getElementById('close-btn');
+    
+    if (minBtn) minBtn.onclick = () => window.launcher.window.minimize();
+    if (closeBtn) closeBtn.onclick = () => window.launcher.window.close();
 
-// ===== TABS SYSTEM =====
-const tabButtons = document.querySelectorAll('.tab-btn');
-const tabPanels = document.querySelectorAll('.tab-panel');
+    // ===== TABS SYSTEM =====
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabPanels = document.querySelectorAll('.tab-panel');
 
-tabButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        const tabName = button.getAttribute('data-tab');
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const tabName = button.getAttribute('data-tab');
 
-        tabButtons.forEach(btn => btn.classList.remove('active'));
-        tabPanels.forEach(panel => panel.classList.remove('active'));
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabPanels.forEach(panel => panel.classList.remove('active'));
 
-        button.classList.add('active');
+            button.classList.add('active');
 
-        const targetPanel = document.getElementById(`${tabName}-tab`);
-        if (targetPanel) {
-            targetPanel.classList.add('active');
-            
-            // Carregar contas quando a aba de contas for aberta
-            if (tabName === 'users') {
-                loadAccounts();
+            const targetPanel = document.getElementById(`${tabName}-tab`);
+            if (targetPanel) {
+                targetPanel.classList.add('active');
+                
+                // Carregar contas quando a aba de contas for aberta
+                if (tabName === 'users') {
+                    loadAccounts();
+                }
+                // Carregar screenshots quando a aba de screenshots for aberta
+                if (tabName === 'screenshots') {
+                    loadScreenshots();
+                }
             }
-            // Carregar screenshots quando a aba de screenshots for aberta
-            if (tabName === 'screenshots') {
-                loadScreenshots();
-            }
-        }
+        });
     });
+
+    // ===== PLAY TAB =====
+    const playBtn = document.getElementById('play-btn');
+    const versionSelect = document.getElementById('version-select');
+    const loaderSelect = document.getElementById('loader-select');
+    const loaderVersionSelect = document.getElementById('loader-version-select');
+    const loaderVersionGroup = document.getElementById('loader-version-group');
+    const progressSection = document.getElementById('progress-section');
+    const progressFill = document.getElementById('progress-fill');
+    const progressStatus = document.getElementById('progress-status');
+    const progressPercent = document.getElementById('progress-percent');
+
+    if (!playBtn || !versionSelect || !loaderSelect) {
+        console.error('Elementos de play tab não encontrados');
+        return;
+    }
+
+    // Atualizar versões de loader quando o seletor mudar
+    versionSelect.addEventListener('change', async () => {
+        const version = versionSelect.value;
+        const loader = loaderSelect.value;
+        
+        if (loader !== 'vanilla') {
+        const isCompatible = await window.launcher.loaders.isCompatible({ loaderType: loader, gameVersion: version });
+        loaderSelect.disabled = !isCompatible;
+        
+        if (isCompatible) {
+            await updateLoaderVersions();
+        }
+    }
 });
 
-// ===== PLAY TAB =====
-const playBtn = document.getElementById('play-btn');
-const versionSelect = document.getElementById('version-select');
-const progressSection = document.getElementById('progress-section');
-const progressFill = document.getElementById('progress-fill');
-const progressStatus = document.getElementById('progress-status');
-const progressPercent = document.getElementById('progress-percent');
+// Atualizar interface e versões quando o loader mudar
+loaderSelect.addEventListener('change', async () => {
+    const loader = loaderSelect.value;
+    
+    if (loader === 'vanilla') {
+        loaderVersionGroup.style.display = 'none';
+    } else {
+        loaderVersionGroup.style.display = 'block';
+        await updateLoaderVersions();
+    }
+});
+
+// Atualizar versões disponíveis do loader
+async function updateLoaderVersions() {
+    const loader = loaderSelect.value;
+    
+    if (loader === 'vanilla') return;
+    
+    loaderVersionSelect.innerHTML = '<option>Carregando...</option>';
+    
+    try {
+        const versions = await window.launcher.loaders.getVersions(loader);
+        
+        if (versions.length === 0) {
+            loaderVersionSelect.innerHTML = '<option disabled>Nenhuma versão disponível</option>';
+            return;
+        }
+        
+        loaderVersionSelect.innerHTML = '';
+        versions.forEach(version => {
+            const option = document.createElement('option');
+            option.value = version;
+            option.textContent = version;
+            loaderVersionSelect.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Erro ao buscar versões do loader:', error);
+        loaderVersionSelect.innerHTML = '<option disabled>Erro ao carregar</option>';
+    }
+}
 
 playBtn.addEventListener('click', async () => {
     const version = versionSelect.value;
+    const modifierType = loaderSelect.value;
+    const modifierVersion = loaderVersionSelect.value;
+    
     playBtn.disabled = true;
     playBtn.innerHTML = '<span>A CARREGAR...</span>';
 
     progressSection.classList.remove('hidden');
     progressFill.style.width = '0%';
+    progressStatus.textContent = 'Preparando ficheiros...';
 
-    const result = await window.launcher.minecraft.launch({ version });
+    try {
+        const result = await window.launcher.minecraft.launch({
+            version,
+            modifierType: modifierType !== 'vanilla' ? modifierType : undefined,
+            modifierVersion: modifierType !== 'vanilla' ? modifierVersion : undefined
+        });
 
-    if (!result.success) {
-        alert('Erro ao iniciar: ' + result.error);
+        if (!result.success) {
+            alert('Erro ao iniciar: ' + result.error);
+        }
+    } catch (error) {
+        console.error('Erro ao lançar jogo:', error);
+        alert('Erro ao iniciar: ' + error.message);
+    } finally {
         playBtn.disabled = false;
         playBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span>JOGAR</span>';
+        progressSection.classList.add('hidden');
     }
 });
 
@@ -279,3 +362,7 @@ logoutBtn.addEventListener('click', () => {
 });
 
 loadSettings();
+};
+
+// Inicializar quando DOM estiver pronto
+document.addEventListener('DOMContentLoaded', initializeRenderer);

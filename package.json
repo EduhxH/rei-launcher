@@ -1,51 +1,69 @@
 {
   "name": "rei-launcher",
   "version": "1.0.0",
-  "description": "Rei Launcher — A modern Minecraft launcher",
-  "author": "Rei Launcher",
-  "main": "src/main/main.js",
+  "description": "Rei Launcher — Premium Minecraft Launcher",
+  "main": "src/main/index.js",
+  "author": "EduhxH",
+  "license": "MIT",
   "scripts": {
-    "start": "electron .",
-    "build:win": "electron-builder --win --publish never"
-  },
-  "build": {
-    "appId": "com.reilauncher.app",
-    "productName": "Rei Launcher",
-    "directories": {
-      "buildResources": "src/renderer/assets"
-    },
-    "files": [
-      "src/**/*",
-      "package.json"
-    ],
-    "win": {
-      "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64"
-          ]
-        }
-      ],
-      "icon": "src/renderer/assets/launcher_icon.png"
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true
-    }
+    "start":      "electron .",
+    "dev":        "electron . --inspect",
+    "lint":       "eslint src/ --ext .js",
+    "dist":       "electron-builder",
+    "dist:win":   "electron-builder --win",
+    "dist:linux": "electron-builder --linux",
+    "dist:mac":   "electron-builder --mac",
+    "release":    "electron-builder --publish always"
   },
   "dependencies": {
-    "axios": "^1.15.2",
-    "ejs-electron": "^3.0.0",
-    "electron-store": "^8.1.0",
-    "minecraft-launcher-core": "^3.18.2",
-    "msmc": "^5.0.5",
-    "uuid": "^9.0.1"
+    "minecraft-launcher-core": "^3.7.1",
+    "msmc":                    "^4.1.0",
+    "uuid":                    "^9.0.0",
+    "electron-updater":        "^6.1.7"
   },
   "devDependencies": {
-    "electron": "^28.0.0",
-    "electron-builder": "^24.0.0"
+    "electron":         "^28.3.3",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId":       "com.reilauncher.app",
+    "productName": "Rei Launcher",
+    "copyright":   "Copyright © 2025 EduhxH",
+    "files": [
+      "src/**/*",
+      "!src/renderer/*.map",
+      "!node_modules/*/{README.md,CHANGELOG.md}",
+      "!node_modules/.bin"
+    ],
+    "extraResources": [],
+    "directories": {
+      "output":         "dist",
+      "buildResources": "build"
+    },
+    "win": {
+      "icon":   "build/icon.ico",
+      "target": [{ "target": "nsis", "arch": ["x64"] }]
+    },
+    "nsis": {
+      "oneClick":                          false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut":             true,
+      "installerIcon":                     "build/icon.ico",
+      "shortcutName":                      "Rei Launcher"
+    },
+    "mac": {
+      "icon":   "build/icon.icns",
+      "target": [{ "target": "dmg" }]
+    },
+    "linux": {
+      "icon":   "build/icons",
+      "target": [{ "target": "AppImage", "arch": ["x64"] }]
+    },
+    "publish": {
+      "provider":     "github",
+      "owner":        "EduhxH",
+      "repo":         "rei-launcher",
+      "releaseType":  "release"
+    }
   }
 }

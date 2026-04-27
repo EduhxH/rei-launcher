@@ -122,6 +122,31 @@
                                         </div>
                                     </div>
 
+                                    <div class="form-group">
+                                        <label for="loader-select">Tipo de Loader</label>
+                                        <div class="select-wrap">
+                                            <select id="loader-select" class="glass-input" data-testid="loader-select">
+                                                <option value="vanilla">Vanilla (Padrão)</option>
+                                                <option value="fabric">Fabric</option>
+                                                <option value="forge">Forge</option>
+                                                <option value="optifine">OptiFine</option>
+                                                <option value="neoforge">NeoForge</option>
+                                                <option value="iris">Iris Shaders</option>
+                                            </select>
+                                            <svg class="select-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group" id="loader-version-group" style="display: none;">
+                                        <label for="loader-version-select">Versão do Loader</label>
+                                        <div class="select-wrap">
+                                            <select id="loader-version-select" class="glass-input" data-testid="loader-version-select">
+                                                <option>Carregando...</option>
+                                            </select>
+                                            <svg class="select-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        </div>
+                                    </div>
+
                                     <button id="play-btn" class="btn-primary" data-testid="play-btn">
                                         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                                         <span>JOGAR</span>

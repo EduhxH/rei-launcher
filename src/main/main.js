@@ -10,9 +10,11 @@ const { createOfflineAccount } = require('./auth/offline.js');
 const { authenticateMicrosoft } = require('./auth/microsoft.js');
 
 // launcher em src/main/launcher/
-const { getRemoteVersions } = require('./launcher/versions.js');
+const { getRemoteVersions, getLoaderVersions, getLoaderSubVersions, isVersionCompatibleWithLoader, getCompatibleLoadersForVersion } = require('./launcher/versions.js');
 const { launchGame } = require('./launcher/mcl-core.js');
 const { detectJava } = require('./launcher/java.js');
+const loaders = require('./launcher/loaders.js');
+const modifiers = require('./launcher/modifiers.js');
 
 let mainWindow;
 
@@ -54,10 +56,22 @@ ipcMain.on('window:minimize', () => mainWindow.minimize());
 ipcMain.on('window:maximize', () => mainWindow.maximize());
 
 // --- MINECRAFT LAUNCH ---
-ipcMain.handle('minecraft:launch', async (event, { version }) => {
+ipcMain.handle('minecraft:launch', async (event, { version, modifierType, modifierVersion }) => {
     try {
+        // Se houver modificador, configurar antes de lançar
+        if (modifierType && modifierType !== 'vanilla') {
+            if (!modifiers.isModifierInstalled(version, modifierType)) {
+                const configResult = await modifiers.configureModifier(version, modifierType, modifierVersion);
+                if (!configResult.success) {
+                    throw new Error('Erro ao configurar modificador');
+                }
+            }
+        }
+
         const result = await launchGame(
             version,
+            modifierType || 'vanilla',
+            modifierVersion || '',
             (progress) => mainWindow.webContents.send('download:progress', progress),
             (log) => mainWindow.webContents.send('game:log', log)
         );
@@ -223,6 +237,101 @@ ipcMain.handle('java:detect', async (event) => {
         return { path: javaPath };
     } catch (err) {
         return { error: err.message };
+    }
+});
+
+// --- LOADERS ---
+ipcMain.handle('loaders:getVersions', async (event, loaderType) => {
+    try {
+        return await getLoaderVersions(loaderType);
+    } catch (err) {
+        console.error(`Erro ao buscar versões de ${loaderType}:`, err);
+        return [];
+    }
+});
+
+ipcMain.handle('loaders:getSubVersions', async (event, { loaderType, gameVersion }) => {
+    try {
+        return await getLoaderSubVersions(loaderType, gameVersion);
+    } catch (err) {
+        console.error(`Erro ao buscar sub-versões:`, err);
+        return [];
+    }
+});
+
+ipcMain.handle('loaders:isCompatible', async (event, { loaderType, gameVersion }) => {
+    return isVersionCompatibleWithLoader(gameVersion, loaderType);
+});
+
+ipcMain.handle('loaders:getCompatible', async (event, gameVersion) => {
+    try {
+        return getCompatibleLoadersForVersion(gameVersion);
+    } catch (err) {
+        console.error('Erro ao buscar loaders compatíveis:', err);
+        return [];
+    }
+});
+
+ipcMain.handle('loaders:install', async (event, { loaderType, gameVersion, loaderVersion }) => {
+    try {
+        let result;
+        const onProgress = (data) => {
+            mainWindow?.webContents.send('loader:installProgress', data);
+        };
+
+        switch (loaderType) {
+            case 'fabric':
+                result = await loaders.installFabric(gameVersion, loaderVersion, onProgress);
+                break;
+            case 'forge':
+                result = await loaders.installForge(gameVersion, loaderVersion, onProgress);
+                break;
+            case 'optifine':
+                result = await loaders.installOptifine(gameVersion, loaderVersion, onProgress);
+                break;
+            case 'neoforge':
+                result = await loaders.installNeoforge(gameVersion, loaderVersion, onProgress);
+                break;
+            case 'iris':
+                result = await loaders.installIris(gameVersion, loaderVersion, onProgress);
+                break;
+            default:
+                throw new Error('Tipo de loader desconhecido');
+        }
+
+        // Configurar modificador após instalar
+        if (result.success) {
+            const configResult = await modifiers.configureModifier(gameVersion, loaderType, loaderVersion);
+            return { ...result, configured: configResult.success };
+        }
+
+        return result;
+    } catch (err) {
+        console.error('[loaders:install]', err);
+        return { success: false, error: err.message };
+    }
+});
+
+ipcMain.handle('loaders:isInstalled', async (event, { gameVersion, loaderType }) => {
+    return modifiers.isModifierInstalled(gameVersion, loaderType);
+});
+
+ipcMain.handle('loaders:getInstalled', async (event) => {
+    try {
+        return modifiers.getInstalledModifiers();
+    } catch (err) {
+        console.error('Erro ao listar modificadores instalados:', err);
+        return [];
+    }
+});
+
+ipcMain.handle('loaders:remove', async (event, { gameVersion, loaderType }) => {
+    try {
+        const success = modifiers.removeModifier(gameVersion, loaderType);
+        return { success };
+    } catch (err) {
+        console.error('Erro ao remover modificador:', err);
+        return { success: false, error: err.message };
     }
 });
 
